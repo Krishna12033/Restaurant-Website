@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 md:grid-cols-2">
           <div>
             <h3 className="font-serif text-xl font-semibold text-primary-foreground mb-4">
-              TasteHub
+              Elicious
             </h3>
             <p className="text-primary-foreground/70 text-sm max-w-xs">
               A refined dining experience that celebrates the art of exceptional food, ambiance, and service.
@@ -124,7 +124,7 @@ const Footer = () => {
         <div className="mt-12 border-t border-primary-foreground/20 pt-6">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-center text-xs text-primary-foreground/60">
-              &copy; {new Date().getFullYear()} TasteHub Restaurant. All rights reserved.
+              &copy; {new Date().getFullYear()} Elicious Restaurant. All rights reserved.
             </p>
             <p className="text-center text-xs text-primary-foreground/60">
               Designed with <span className="text-primary-foreground/90">♥</span> for exceptional dining

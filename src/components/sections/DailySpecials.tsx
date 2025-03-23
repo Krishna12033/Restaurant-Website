@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { ArrowRight } from 'lucide-react';
+import { useToast } from "@/components/ui/use-toast";
+import ReservationModal from '../ui/ReservationModal';
 
 interface SpecialOffer {
   day: string;
@@ -75,6 +77,8 @@ const DailySpecials = () => {
   const [currentDay, setCurrentDay] = useState<string>('');
   const [activeSpecial, setActiveSpecial] = useState<SpecialOffer | null>(null);
   const [animating, setAnimating] = useState(false);
+  const [showReservationModal, setShowReservationModal] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Get current day of the week
@@ -98,10 +102,18 @@ const DailySpecials = () => {
     }, 300);
   };
 
+  const handleReserveClick = () => {
+    setShowReservationModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowReservationModal(false);
+  };
+
   if (!activeSpecial) return null;
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-primary/5 to-primary/10 py-16 dark:from-primary/10 dark:to-primary/20">
+    <section id="specials" className="relative overflow-hidden bg-gradient-to-r from-primary/5 to-primary/10 py-16 dark:from-primary/10 dark:to-primary/20">
       <div className="absolute inset-0 bg-texture opacity-5"></div>
       
       <div className="container-custom">
@@ -170,7 +182,10 @@ const DailySpecials = () => {
                   <p className="font-serif text-2xl font-bold text-primary">{activeSpecial.price}</p>
                 </div>
                 
-                <button className="group flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90">
+                <button 
+                  onClick={handleReserveClick}
+                  className="group flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90"
+                >
                   Reserve Now
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </button>
@@ -183,6 +198,15 @@ const DailySpecials = () => {
           </div>
         </div>
       </div>
+      
+      {showReservationModal && (
+        <ReservationModal 
+          isOpen={showReservationModal} 
+          onClose={handleCloseModal} 
+          specialDay={activeSpecial.day}
+          specialName={activeSpecial.name}
+        />
+      )}
     </section>
   );
 };

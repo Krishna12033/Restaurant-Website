@@ -40,6 +40,19 @@ const Navbar = () => {
     };
   }, [isOpen]);
 
+  const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    event.preventDefault();
+    setIsOpen(false);
+    const element = document.querySelector(href);
+    if (element) {
+      const offsetTop = element.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <header
       className={cn(
@@ -53,7 +66,7 @@ const Navbar = () => {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <a href="#" className="text-2xl font-serif font-semibold tracking-tight">
-              Taste<span className="text-primary/80">Hub</span>
+              E<span className="text-primary/80">licious</span>
             </a>
           </div>
 
@@ -65,6 +78,7 @@ const Navbar = () => {
                   <a
                     href={link.href}
                     className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+                    onClick={(e) => handleNavClick(e, link.href)}
                   >
                     {link.name}
                   </a>
@@ -99,7 +113,9 @@ const Navbar = () => {
                   <a
                     href={link.href}
                     className="block text-center text-2xl font-medium text-foreground transition-colors hover:text-primary"
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => {
+                      handleNavClick(e, link.href);
+                    }}
                   >
                     {link.name}
                   </a>

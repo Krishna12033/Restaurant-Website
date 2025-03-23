@@ -4,6 +4,22 @@ import CustomButton from '../ui/Button';
 import AnimatedImage from '../ui/AnimatedImage';
 
 const Hero = () => {
+  const handleReserveClick = () => {
+    // Scroll to contact section
+    const contactSection = document.querySelector('#contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleExploreMenuClick = () => {
+    // Scroll to menu section
+    const menuSection = document.querySelector('#menu');
+    if (menuSection) {
+      menuSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section id="home" className="relative min-h-screen w-full overflow-hidden">
       {/* Background Image with Overlay */}
@@ -27,8 +43,8 @@ const Hero = () => {
               An Exquisite Dining Experience
             </span>
             <h1 className="font-serif text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl opacity-0 animate-fade-up stagger-animate-2">
-              Discover Culinary <br />
-              <span className="text-primary-foreground/80">Excellence</span>
+              Welcome to <br />
+              <span className="text-primary-foreground/80">Elicious</span>
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-white/80 opacity-0 animate-fade-up stagger-animate-3">
               Experience the perfect harmony of flavors, ambiance, and service. Our passionate chefs craft each dish with precision and creativity, ensuring a memorable dining journey.
@@ -37,6 +53,7 @@ const Hero = () => {
               <CustomButton
                 size="lg"
                 className="bg-white text-primary hover:bg-white/90"
+                onClick={handleReserveClick}
               >
                 Reserve a Table
               </CustomButton>
@@ -44,6 +61,7 @@ const Hero = () => {
                 variant="outline"
                 size="lg"
                 className="border-white text-white hover:bg-white/10"
+                onClick={handleExploreMenuClick}
               >
                 Explore Menu
               </CustomButton>
