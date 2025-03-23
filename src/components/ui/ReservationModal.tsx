@@ -56,7 +56,6 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      // Create reservation in Supabase
       const { data, error } = await supabase
         .from('reservations')
         .insert([
@@ -84,7 +83,6 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
     } catch (error) {
       console.error('Error saving reservation:', error);
       
-      // Show helpful error message in production
       toast({
         title: "Reservation Error",
         description: "Please ensure all fields are filled correctly. If this persists, please contact us directly.",
@@ -95,7 +93,6 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
     }
   };
 
-  // Get tomorrow's date in YYYY-MM-DD format for the date input min value
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowStr = tomorrow.toISOString().split('T')[0];

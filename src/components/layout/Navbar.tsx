@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
@@ -70,6 +70,12 @@ const Navbar = () => {
             </a>
           </div>
 
+          {/* Address Display */}
+          <div className="hidden items-center text-sm text-muted-foreground md:flex">
+            <MapPin size={16} className="mr-1 text-primary" />
+            <span>Behan Street, Bentley</span>
+          </div>
+
           {/* Desktop Navigation */}
           <nav className="hidden md:block">
             <ul className="flex space-x-8">
@@ -106,6 +112,12 @@ const Navbar = () => {
         )}
       >
         <div className="container-custom py-8">
+          {/* Address in mobile menu */}
+          <div className="mt-6 flex justify-center items-center text-sm text-muted-foreground">
+            <MapPin size={16} className="mr-1 text-primary" />
+            <span>Behan Street, Bentley</span>
+          </div>
+          
           <nav className="mt-12">
             <ul className="space-y-6">
               {navLinks.map((link) => (
