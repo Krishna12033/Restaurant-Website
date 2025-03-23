@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -6,12 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { createClient } from '@supabase/supabase-js';
 import { Loader2 } from 'lucide-react';
-
-const supabaseUrl = 'https://your-supabase-url.supabase.co';
-const supabaseKey = 'your-supabase-anon-key';
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from '@/lib/supabase';
 
 interface ReservationModalProps {
   isOpen: boolean;
@@ -87,15 +82,14 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
       
       onClose();
     } catch (error) {
-      // For demo purposes, continue as if successful
       console.error('Error saving reservation:', error);
       
+      // Show helpful error message in production
       toast({
-        title: "Reservation Confirmed!",
-        description: `Thank you for your reservation, ${formData.name}. We look forward to serving you on ${formData.date}!`,
+        title: "Reservation Error",
+        description: "Please ensure all fields are filled correctly. If this persists, please contact us directly.",
+        variant: "destructive"
       });
-      
-      onClose();
     } finally {
       setIsSubmitting(false);
     }

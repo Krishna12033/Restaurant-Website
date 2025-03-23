@@ -1,8 +1,86 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '../ui/Button';
+import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/lib/supabase';
 
 const ContactSection = () => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    date: '',
+    time: '',
+    guests: '',
+    specialRequest: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      // Create reservation in Supabase
+      const { data, error } = await supabase
+        .from('reservations')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            reservation_date: formData.date,
+            reservation_time: formData.time,
+            guests: parseInt(formData.guests || '2'),
+            special_request: formData.specialRequest
+          }
+        ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Reservation Confirmed!",
+        description: `Thank you for your reservation, ${formData.name}. We look forward to serving you on ${formData.date}!`,
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        date: '',
+        time: '',
+        guests: '',
+        specialRequest: ''
+      });
+      
+    } catch (error) {
+      console.error('Error saving reservation:', error);
+      
+      toast({
+        title: "Reservation Error",
+        description: "Please ensure all fields are filled correctly. If this persists, please contact us directly.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Get tomorrow's date in YYYY-MM-DD format for the date input min value
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
   return (
     <section id="contact" className="section-padding bg-white dark:bg-zinc-950">
       <div className="container-custom">
@@ -26,7 +104,7 @@ const ContactSection = () => {
               Fill out the form below and we'll confirm your reservation shortly.
             </p>
 
-            <form className="mt-6 space-y-4">
+            <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <label
@@ -40,6 +118,8 @@ const ContactSection = () => {
                     type="text"
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="Your name"
+                    value={formData.name}
+                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -55,6 +135,8 @@ const ContactSection = () => {
                     type="email"
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="Your email"
+                    value={formData.email}
+                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -72,6 +154,9 @@ const ContactSection = () => {
                     id="date"
                     type="date"
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    min={tomorrowStr}
+                    value={formData.date}
+                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -86,6 +171,8 @@ const ContactSection = () => {
                     id="time"
                     type="time"
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    value={formData.time}
+                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -102,6 +189,8 @@ const ContactSection = () => {
                   <select
                     id="guests"
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    value={formData.guests}
+                    onChange={handleChange}
                     required
                   >
                     <option value="">Select</option>
@@ -125,6 +214,8 @@ const ContactSection = () => {
                     type="tel"
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="Your phone number"
+                    value={formData.phone}
+                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -132,21 +223,23 @@ const ContactSection = () => {
 
               <div className="space-y-2">
                 <label
-                  htmlFor="special-requests"
+                  htmlFor="specialRequest"
                   className="text-sm font-medium text-foreground"
                 >
                   Special Requests (Optional)
                 </label>
                 <textarea
-                  id="special-requests"
+                  id="specialRequest"
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                   placeholder="Any special requests or dietary requirements"
                   rows={3}
+                  value={formData.specialRequest}
+                  onChange={handleChange}
                 ></textarea>
               </div>
 
-              <Button size="lg" className="w-full" type="submit">
-                Reserve Now
+              <Button size="lg" className="w-full" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Processing...' : 'Reserve Now'}
               </Button>
             </form>
           </div>
