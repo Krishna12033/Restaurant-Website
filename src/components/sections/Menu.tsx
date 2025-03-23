@@ -1,7 +1,7 @@
 
 import React from 'react';
 import MenuCard from '../ui/MenuCard';
-import Button from '../ui/Button';
+import CustomButton from '../ui/Button';
 
 const menuItems = [
   {
@@ -69,16 +69,16 @@ const MenuSection = () => {
               price={item.price}
               image={item.image}
               featured={item.featured}
-              className="opacity-0 animate-fade-up"
-              style={{ animationDelay: `${index * 100}ms` }}
+              className={`opacity-0 animate-fade-up`}
+              data-delay={index * 100}
             />
           ))}
         </div>
 
         <div className="mt-12 text-center">
-          <Button size="lg" variant="outline" className="mx-auto">
+          <CustomButton size="lg" variant="outline" className="mx-auto">
             View Full Menu
-          </Button>
+          </CustomButton>
         </div>
       </div>
     </section>

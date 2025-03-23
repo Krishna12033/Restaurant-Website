@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 interface MenuCardProps {
@@ -9,6 +9,7 @@ interface MenuCardProps {
   image?: string;
   className?: string;
   featured?: boolean;
+  'data-delay'?: number;
 }
 
 const MenuCard = ({
@@ -18,9 +19,19 @@ const MenuCard = ({
   image,
   className,
   featured = false,
+  'data-delay': delay,
 }: MenuCardProps) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (cardRef.current && delay) {
+      cardRef.current.style.animationDelay = `${delay}ms`;
+    }
+  }, [delay]);
+
   return (
     <div
+      ref={cardRef}
       className={cn(
         'group relative overflow-hidden rounded-lg transition-all duration-300',
         featured ? 'bg-white shadow-lg dark:bg-zinc-900' : 'bg-white/50 hover:bg-white/80 dark:bg-zinc-900/50 dark:hover:bg-zinc-900/80',
