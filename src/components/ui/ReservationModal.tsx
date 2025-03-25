@@ -1,29 +1,10 @@
+
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-
-interface ReservationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  specialDay: string;
-  specialName: string;
-}
-
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  date: string;
-  time: string;
-  guests: string;
-  specialRequest: string;
-}
+import { ReservationFormData, ReservationModalProps } from '@/types/reservation';
+import { saveReservation, getTomorrowDate } from '@/utils/reservationUtils';
+import ReservationForm from '@/components/reservation/ReservationForm';
 
 const ReservationModal: React.FC<ReservationModalProps> = ({ 
   isOpen, 
@@ -33,7 +14,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
 }) => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<ReservationFormData>({
     name: '',
     email: '',
     phone: '',
@@ -56,23 +37,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase
-        .from('reservations')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            reservation_date: formData.date,
-            reservation_time: formData.time,
-            guests: parseInt(formData.guests),
-            special_request: formData.specialRequest,
-            special_day: specialDay,
-            special_name: specialName
-          }
-        ]);
-
-      if (error) throw error;
+      await saveReservation(formData, specialDay, specialName);
 
       toast({
         title: "Reservation Confirmed!",
@@ -93,9 +58,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
     }
   };
 
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = tomorrow.toISOString().split('T')[0];
+  const tomorrowStr = getTomorrowDate();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -106,115 +69,14 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
           </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input 
-              id="name" 
-              name="name" 
-              value={formData.name} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input 
-                id="email" 
-                name="email" 
-                type="email" 
-                value={formData.email} 
-                onChange={handleChange} 
-                required 
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
-              <Input 
-                id="phone" 
-                name="phone" 
-                type="tel" 
-                value={formData.phone} 
-                onChange={handleChange} 
-                required 
-              />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="date">Date</Label>
-              <Input 
-                id="date" 
-                name="date" 
-                type="date" 
-                min={tomorrowStr}
-                value={formData.date} 
-                onChange={handleChange} 
-                required 
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="time">Time</Label>
-              <Input 
-                id="time" 
-                name="time" 
-                type="time" 
-                value={formData.time} 
-                onChange={handleChange} 
-                required 
-              />
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="guests">Number of Guests</Label>
-            <Input 
-              id="guests" 
-              name="guests" 
-              type="number" 
-              min="1" 
-              max="10" 
-              value={formData.guests} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="specialRequest">Special Requests (Optional)</Label>
-            <Textarea 
-              id="specialRequest" 
-              name="specialRequest" 
-              value={formData.specialRequest} 
-              onChange={handleChange} 
-              rows={3} 
-            />
-          </div>
-          
-          <DialogFooter>
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={onClose}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                'Confirm Reservation'
-              )}
-            </Button>
-          </DialogFooter>
-        </form>
+        <ReservationForm
+          formData={formData}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+          minDate={tomorrowStr}
+          onCancel={onClose}
+        />
       </DialogContent>
     </Dialog>
   );
