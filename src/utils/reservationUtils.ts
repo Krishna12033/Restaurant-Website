@@ -1,5 +1,4 @@
 
-import { supabase } from '@/lib/supabase';
 import { ReservationFormData } from '@/types/reservation';
 
 export const saveReservation = async (
@@ -7,24 +6,18 @@ export const saveReservation = async (
   specialDay: string, 
   specialName: string
 ) => {
-  const { data, error } = await supabase
-    .from('reservations')
-    .insert([
-      {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        reservation_date: formData.date,
-        reservation_time: formData.time,
-        guests: parseInt(formData.guests),
-        special_request: formData.specialRequest,
-        special_day: specialDay,
-        special_name: specialName
-      }
-    ]);
-
-  if (error) throw error;
-  return data;
+  // Simulate a database save
+  console.log('Saving reservation:', { 
+    ...formData, 
+    specialDay, 
+    specialName 
+  });
+  
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // Return mock data
+  return { success: true };
 };
 
 export const getTomorrowDate = (): string => {

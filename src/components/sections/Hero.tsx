@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import AnimatedImage from '../ui/AnimatedImage';
@@ -57,9 +58,8 @@ const Hero = () => {
                 Reserve a Table
               </Button>
               <Button
-                variant="outline"
+                variant="explore"
                 size="lg"
-                className="border-white text-white hover:bg-white/10"
                 onClick={handleExploreMenuClick}
               >
                 Explore Menu
