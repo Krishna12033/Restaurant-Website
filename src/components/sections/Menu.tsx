@@ -1,7 +1,7 @@
 
 import React from 'react';
 import MenuCard from '../ui/MenuCard';
-import CustomButton from '../ui/Button';
+import { Button } from '@/components/ui/button';
 
 const menuItems = [
   {
@@ -76,9 +76,9 @@ const MenuSection = () => {
         </div>
 
         <div className="mt-12 text-center">
-          <CustomButton size="lg" variant="outline" className="mx-auto">
+          <Button size="lg" variant="outline" className="mx-auto">
             View Full Menu
-          </CustomButton>
+          </Button>
         </div>
       </div>
     </section>

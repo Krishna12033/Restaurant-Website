@@ -1,6 +1,5 @@
-
 import React from 'react';
-import CustomButton from '../ui/Button';
+import { Button } from '@/components/ui/button';
 import AnimatedImage from '../ui/AnimatedImage';
 
 const Hero = () => {
@@ -50,21 +49,21 @@ const Hero = () => {
               Experience the perfect harmony of flavors, ambiance, and service. Our passionate chefs craft each dish with precision and creativity, ensuring a memorable dining journey.
             </p>
             <div className="mt-8 flex flex-wrap gap-4 opacity-0 animate-fade-up stagger-animate-4">
-              <CustomButton
+              <Button
                 size="lg"
                 className="bg-white text-primary hover:bg-white/90"
                 onClick={handleReserveClick}
               >
                 Reserve a Table
-              </CustomButton>
-              <CustomButton
+              </Button>
+              <Button
                 variant="outline"
                 size="lg"
                 className="border-white text-white hover:bg-white/10"
                 onClick={handleExploreMenuClick}
               >
                 Explore Menu
-              </CustomButton>
+              </Button>
             </div>
           </div>
 
