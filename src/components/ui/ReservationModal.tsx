@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { ReservationFormData, ReservationModalProps } from '@/types/reservation';
-import { getTomorrowDate } from '@/utils/reservationUtils';
+import { getTomorrowDate, saveReservation } from '@/utils/reservationUtils';
 import ReservationForm from '@/components/reservation/ReservationForm';
 
 const ReservationModal: React.FC<ReservationModalProps> = ({ 
@@ -37,22 +37,18 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      // Simulate API call since Supabase credentials aren't set
-      console.log('Special reservation data:', {
-        ...formData,
-        specialDay,
-        specialName
-      });
+      const result = await saveReservation(formData, specialDay, specialName);
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      toast({
-        title: "Reservation Confirmed!",
-        description: `Thank you for your reservation, ${formData.name}. We look forward to serving you on ${formData.date}!`,
-      });
-      
-      onClose();
+      if (result.success) {
+        toast({
+          title: "Reservation Confirmed!",
+          description: `Thank you for your reservation, ${formData.name}. We look forward to serving you on ${formData.date}!`,
+        });
+        
+        onClose();
+      } else {
+        throw new Error('Failed to save reservation');
+      }
     } catch (error) {
       console.error('Error processing reservation:', error);
       
